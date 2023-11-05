@@ -55,8 +55,12 @@ void setup() {
   setupHardware();
   renderBootUpPage();
 
+  LEDintensity = getLEDintensity();
+  LEDintensity = LEDintensity * 10;
+  oldLEDintensity = LEDintensity;
+
   patchDisplay.begin();            // initializes the display
-  patchDisplay.setBacklight(100);  // set the brightness to 100 %
+  patchDisplay.setBacklight(LEDintensity);  // set the brightness to 100 %
   padPatchNumber();
   patchDisplay.print(patchNumber);  // display INIT on the display
   delay(10);
@@ -102,6 +106,15 @@ void padPatchNumber() {
   }
   if (patchNo < 100 && patchNo > 9) {
     patchNumber = " " + String(patchNo);
+  }
+}
+
+void checkEEPROM() {
+
+  if (oldLEDintensity != LEDintensity) {
+    int tempLEDintensity = LEDintensity * 10;
+    patchDisplay.setBacklight(tempLEDintensity);
+    oldLEDintensity = LEDintensity;
   }
 }
 
@@ -757,4 +770,5 @@ void loop() {
   checkEncoder();
   checkMux();
   writeDemux();
+  checkEEPROM();
 }

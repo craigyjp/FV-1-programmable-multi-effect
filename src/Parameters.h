@@ -24,6 +24,9 @@ String patchNumber;
 unsigned long timeout = 0;
 unsigned long firsttimer = 0;
 
+byte LEDintensity = 10;//(EEPROM)
+byte oldLEDintensity;
+
 String patchName = INITPATCHNAME;
 boolean encCW = true;//This is to set the encoder to increment when turned CW - Settings Option
 

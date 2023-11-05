@@ -1,4 +1,4 @@
-#define SETTINGSOPTIONSNO 2
+#define SETTINGSOPTIONSNO 3
 #define SETTINGSVALUESNO 18  //Maximum number of settings option values needed
 int settingsValueIndex = 0;  //currently selected settings option value index
 
@@ -11,10 +11,12 @@ struct SettingsOption {
 
 void settingsMIDICh(char *value);
 void settingsEncoderDir(char * value);
+void settingsLEDintensity(char * value);
 void settingsHandler(char *s, void (*f)(char *));
 
 int currentIndexMIDICh();
 int currentIndexEncoderDir();
+int currentIndexLEDintensity();
 int getCurrentIndex(int (*f)());
 
 
@@ -36,6 +38,14 @@ void settingsEncoderDir(char * value) {
   storeEncoderDir(encCW ? 1 : 0);
 }
 
+void settingsLEDintensity(char *value) {
+  if (strcmp(value, "Off") == 0) {
+    LEDintensity = 0;
+  } else {
+    LEDintensity = atoi(value);
+  }
+  storeLEDintensity(LEDintensity);
+}
 
 //Takes a pointer to a specific method for the settings option and invokes it.
 void settingsHandler(char *s, void (*f)(char *)) {
@@ -50,6 +60,9 @@ int currentIndexEncoderDir() {
   return getEncoderDir() ? 0 : 1;
 }
 
+int currentIndexLEDintensity() {
+  return getLEDintensity();
+}
 
 //Takes a pointer to a specific method for the current settings option value and invokes it.
 int getCurrentIndex(int (*f)()) {
@@ -62,4 +75,5 @@ CircularBuffer<SettingsOption, SETTINGSOPTIONSNO> settingsOptions;
 void setUpSettings() {
   settingsOptions.push(SettingsOption{ "MIDI Ch.", { "All", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", '\0' }, settingsMIDICh, currentIndexMIDICh });
   settingsOptions.push(SettingsOption{"Encoder", {"Type 1", "Type 2", '\0'}, settingsEncoderDir, currentIndexEncoderDir});
+  settingsOptions.push(SettingsOption{ "LED Bright", { "Off", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", '\0' }, settingsLEDintensity, currentIndexLEDintensity });
 }

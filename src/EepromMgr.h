@@ -2,6 +2,7 @@
 
 #define EEPROM_MIDI_CH 0
 #define EEPROM_ENCODER_DIR 1
+#define EEPROM_LED_INTENSITY 2
 
 int getMIDIChannel() {
   byte midiChannel = EEPROM.read(EEPROM_MIDI_CH);
@@ -23,5 +24,15 @@ boolean getEncoderDir() {
 void storeEncoderDir(byte encoderDir)
 {
   EEPROM.update(EEPROM_ENCODER_DIR, encoderDir);
+}
+
+int getLEDintensity() {
+  byte li = EEPROM.read(EEPROM_LED_INTENSITY);
+  if (li < 0 || li > 10) li = 10; //If EEPROM has no intesity stored
+  return li;
+}
+
+void storeLEDintensity(byte LEDintensity){
+  EEPROM.update(EEPROM_LED_INTENSITY, LEDintensity);
 }
 

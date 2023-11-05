@@ -293,7 +293,7 @@ void renderSettingsPage() {
   if (currentSettingsPart == SETTINGS) renderUpDown(100, 10, WHITE);
   display.drawFastHLine(5, 31, display.width() - 10, WHITE);
   display.setTextColor(WHITE);
-  display.setCursor(5, 58);
+  display.setCursor(5, 36);
   display.println(currentSettingsValue);
   if (currentSettingsPart == SETTINGSVALUE) renderUpDown(100, 45, WHITE);
 }
