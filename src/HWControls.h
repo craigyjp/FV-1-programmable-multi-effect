@@ -43,10 +43,13 @@
 #define PROGRAM_1 9
 #define PROGRAM_2 10
 
+#define SEG_DIO 4
+#define SEG_CLK 5
+
 
 #define DEBOUNCE 30
 
-#define QUANTISE_FACTOR 19
+#define QUANTISE_FACTOR 7
 
 static int mux1ValuesPrev;
 static int mux2ValuesPrev;

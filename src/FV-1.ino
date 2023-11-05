@@ -12,6 +12,8 @@
 #include <Adafruit_GFX.h>
 #include <Adafruit_SSD1306.h>
 #include <ShiftRegister74HC595.h>
+#include <SevenSegmentTM1637.h>
+#include <SevenSegmentExtended.h>
 
 #define PARAMETER 0      //The main page for displaying the current patch and control (parameter) changes
 #define RECALL 1         //Patches list
@@ -40,6 +42,8 @@ MIDI_CREATE_INSTANCE(HardwareSerial, Serial1, MIDI);  //RX - Pin 0
 // parameters: <number of shift registers> (data pin, clock pin, latch pin)
 ShiftRegister74HC595<2> sr(45, 43, 44);
 
+// LED displays
+SevenSegmentExtended patchDisplay(SEG_CLK, SEG_DIO);
 
 void setup() {
 
@@ -50,6 +54,12 @@ void setup() {
 
   setupHardware();
   renderBootUpPage();
+
+  patchDisplay.begin();            // initializes the display
+  patchDisplay.setBacklight(100);  // set the brightness to 100 %
+  padPatchNumber();
+  patchDisplay.print(patchNumber);  // display INIT on the display
+  delay(10);
 
   cardStatus = SD.begin(SDCARD);
   if (cardStatus) {
@@ -82,8 +92,17 @@ void setup() {
   //Read Encoder Direction from EEPROM
   encCW = getEncoderDir();
   startFirstTimer();
-  recallPatch(patchNo);  //Load first patch
+  recallPatch(patchNo);
   updateScreen();
+}
+
+void padPatchNumber() {
+  if (patchNo < 10) {
+    patchNumber = "  " + String(patchNo);
+  }
+  if (patchNo < 100 && patchNo > 9) {
+    patchNumber = " " + String(patchNo);
+  }
 }
 
 void startFirstTimer() {
@@ -123,6 +142,8 @@ void recallPatch(int patchNo) {
     recallPatchData(patchFile, data);
     setCurrentPatchData(data);
     patchFile.close();
+    padPatchNumber();
+    patchDisplay.print(patchNumber); 
   }
 }
 
@@ -132,22 +153,26 @@ void setCurrentPatchData(String data[]) {
   pot1 = data[2].toInt();
   pot2 = data[3].toInt();
   pot3 = data[4].toInt();
-  bank0 = data[5].toInt();
-  bank1 = data[6].toInt();
-  mix = data[7].toInt();
+  mix = data[5].toInt();
+  bank0 = data[6].toInt();
+  bank1 = data[7].toInt();
   bank2 = data[8].toInt();
   bank3 = data[9].toInt();
 
   //Switches
   updatebank(0);
+  updateeffect(0);
+  updatepot1(0);
+  updatepot2(0);
+  updatepot3(0);
+  updatemix(0);
 
   //Patchname
   updatePatchname();
-
 }
 
 String getCurrentPatchData() {
-  return patchName + "," + String(effect) + "," + String(pot1) + "," + String(pot2) + "," + String(pot3) + "," + String(bank0) + "," + String(bank1) + "," + String(mix) + "," + String(bank2) + "," + String(bank3);
+  return patchName + "," + String(effect) + "," + String(pot1) + "," + String(pot2) + "," + String(pot3) + "," + String(mix) + "," + String(bank0) + "," + String(bank1) + "," + String(bank2) + "," + String(bank3);
 }
 
 void updatePatchname() {
@@ -157,160 +182,131 @@ void updatePatchname() {
 void updateeffect(boolean announce) {
   switch (effect) {
     case 0:
-      StratusLFOWaveform = "Sawtooth Up";
       sr.set(PROGRAM_0, LOW);
       sr.set(PROGRAM_1, LOW);
       sr.set(PROGRAM_2, LOW);
+      i = 0;
       break;
 
     case 1:
-      StratusLFOWaveform = "Sawtooth Dn";
       sr.set(PROGRAM_0, HIGH);
       sr.set(PROGRAM_1, LOW);
       sr.set(PROGRAM_2, LOW);
+      i = 1;
       break;
 
     case 2:
-      StratusLFOWaveform = "Squarewave";
       sr.set(PROGRAM_0, LOW);
       sr.set(PROGRAM_1, HIGH);
       sr.set(PROGRAM_2, LOW);
+      i = 2;
       break;
 
     case 3:
-      StratusLFOWaveform = "Triangle";
       sr.set(PROGRAM_0, HIGH);
       sr.set(PROGRAM_1, HIGH);
       sr.set(PROGRAM_2, LOW);
+      i = 3;
       break;
 
     case 4:
-      StratusLFOWaveform = "Sinewave";
       sr.set(PROGRAM_0, LOW);
       sr.set(PROGRAM_1, LOW);
       sr.set(PROGRAM_2, HIGH);
+      i = 4;
       break;
 
     case 5:
-      StratusLFOWaveform = "Sweeps";
       sr.set(PROGRAM_0, HIGH);
       sr.set(PROGRAM_1, LOW);
       sr.set(PROGRAM_2, HIGH);
+      i = 5;
       break;
 
     case 6:
-      StratusLFOWaveform = "Lumps";
       sr.set(PROGRAM_0, LOW);
       sr.set(PROGRAM_1, HIGH);
       sr.set(PROGRAM_2, HIGH);
+      i = 6;
       break;
 
     case 7:
-      StratusLFOWaveform = "Random";
       sr.set(PROGRAM_0, HIGH);
       sr.set(PROGRAM_1, HIGH);
       sr.set(PROGRAM_2, HIGH);
+      i = 7;
       break;
-  }
-  if (announce) {
-    showCurrentParameterPage("Effect", StratusLFOWaveform);
   }
 }
 
 void updatepot1(boolean announce) {
-  if (announce) {
-    showCurrentParameterPage("Pot 1", String(pot1str));
-  }
   uint32_t outputValue_a = map(pot1, 0, 1023, 0, 43785);
-  sample_data = ((channel_a & 0xFFF0000F) | ( outputValue_a & 0xFFFF) << 4);
+  sample_data = ((channel_a & 0xFFF0000F) | (outputValue_a & 0xFFFF) << 4);
   outputDAC(DAC_CS1, sample_data);
 }
 
 void updatepot2(boolean announce) {
-  if (announce) {
-    showCurrentParameterPage("Pot 2", int(pot2str));
-  }
   uint32_t outputValue_b = map(pot2, 0, 1023, 0, 43785);
-  sample_data = ((channel_b & 0xFFF0000F) | ( outputValue_b & 0xFFFF) << 4);
+  sample_data = ((channel_b & 0xFFF0000F) | (outputValue_b & 0xFFFF) << 4);
   outputDAC(DAC_CS1, sample_data);
 }
 
 void updatepot3(boolean announce) {
-  if (announce) {
-    showCurrentParameterPage("Pot 3", int(pot3str));
-  }
   uint32_t outputValue_c = map(pot3, 0, 1023, 0, 43785);
-  sample_data = ((channel_c & 0xFFF0000F) | ( outputValue_c & 0xFFFF) << 4);
+  sample_data = ((channel_c & 0xFFF0000F) | (outputValue_c & 0xFFFF) << 4);
   outputDAC(DAC_CS1, sample_data);
 }
 
 void updatemix(boolean announce) {
-  if (announce) {
-    showCurrentParameterPage("Dry / Wet", "Dry " + String(mixstrb) + " Wet " + String(mixstra));
-  }
   uint32_t outputValue_e = map(mix, 0, 1023, 0, 52428);
-  sample_data = ((channel_e & 0xFFF0000F) | ( outputValue_e & 0xFFFF) << 4);
+  sample_data = ((channel_e & 0xFFF0000F) | (outputValue_e & 0xFFFF) << 4);
   outputDAC(DAC_CS1, sample_data);
 
   uint32_t outputValue_f = map(mix, 0, 1023, 52428, 0);
-  sample_data = ((channel_f & 0xFFF0000F) | ( outputValue_f & 0xFFFF) << 4);
+  sample_data = ((channel_f & 0xFFF0000F) | (outputValue_f & 0xFFFF) << 4);
   outputDAC(DAC_CS1, sample_data);
-
 }
 
 void updatebank(boolean announce) {
   if (bank0) {
-    if (announce) {
-      showCurrentParameterPage("Bank Select", String("Internal"));
-    }
     sr.set(BANK0_LED, HIGH);
     sr.set(BANK1_LED, LOW);
     sr.set(BANK2_LED, LOW);
     sr.set(BANK3_LED, LOW);
     sr.set(INTERNAL, LOW);
-    sr.set(EEPROM_1, LOW);
-    sr.set(EEPROM_2, LOW);
-    sr.set(EEPROM_3, LOW);
-
+    sr.set(EEPROM_1, HIGH);
+    sr.set(EEPROM_2, HIGH);
+    sr.set(EEPROM_3, HIGH);
   }
   if (bank1) {
-    if (announce) {
-      showCurrentParameterPage("Bank Select", String("Eeprom 1"));
-    }
     sr.set(BANK0_LED, LOW);
     sr.set(BANK1_LED, HIGH);
     sr.set(BANK2_LED, LOW);
     sr.set(BANK3_LED, LOW);
     sr.set(INTERNAL, HIGH);
-    sr.set(EEPROM_1, HIGH);
-    sr.set(EEPROM_2, LOW);
-    sr.set(EEPROM_3, LOW);
+    sr.set(EEPROM_1, LOW);
+    sr.set(EEPROM_2, HIGH);
+    sr.set(EEPROM_3, HIGH);
   }
   if (bank2) {
-    if (announce) {
-      showCurrentParameterPage("Bank Select", String("Eeprom 2"));
-    }
     sr.set(BANK0_LED, LOW);
     sr.set(BANK1_LED, LOW);
     sr.set(BANK2_LED, HIGH);
     sr.set(BANK3_LED, LOW);
     sr.set(INTERNAL, HIGH);
-    sr.set(EEPROM_1, LOW);
-    sr.set(EEPROM_2, HIGH);
-    sr.set(EEPROM_3, LOW);
+    sr.set(EEPROM_1, HIGH);
+    sr.set(EEPROM_2, LOW);
+    sr.set(EEPROM_3, HIGH);
   }
   if (bank3) {
-    if (announce) {
-      showCurrentParameterPage("Bank Select", String("Eeprom 3"));
-    }
     sr.set(BANK0_LED, LOW);
     sr.set(BANK1_LED, LOW);
     sr.set(BANK2_LED, LOW);
     sr.set(BANK3_LED, HIGH);
     sr.set(INTERNAL, HIGH);
-    sr.set(EEPROM_1, LOW);
-    sr.set(EEPROM_2, LOW);
-    sr.set(EEPROM_3, HIGH);
+    sr.set(EEPROM_1, HIGH);
+    sr.set(EEPROM_2, HIGH);
+    sr.set(EEPROM_3, LOW);
   }
 }
 
@@ -363,7 +359,6 @@ void myControlChange(byte channel, byte control, int value) {
     case CCbank3:
       updatebank(1);
       break;
-
   }
 }
 
@@ -397,7 +392,7 @@ void checkMux() {
     myControlChange(midiChannel, CCpot1, mux4Read);
   }
 
-    mux5Read = analogRead(MUX5_S);
+  mux5Read = analogRead(MUX5_S);
   if (mux5Read > (mux5ValuesPrev + QUANTISE_FACTOR) || mux5Read < (mux5ValuesPrev - QUANTISE_FACTOR)) {
 
     mux5ValuesPrev = mux5Read;
@@ -406,7 +401,6 @@ void checkMux() {
 }
 
 void writeDemux() {
-  
 }
 
 void reinitialiseToPanel() {
