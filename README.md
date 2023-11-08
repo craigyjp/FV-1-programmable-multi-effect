@@ -18,3 +18,4 @@ The programmer is based around a Teensy 2++, I understand these are hard to find
 
 * Bank changes over MIDI
 * Foot switch bypass input
+* Sysex dumps and loading of patches
