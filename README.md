@@ -9,13 +9,12 @@ The programmer is based around a Teensy 2++, I understand these are hard to find
 * 32 effects cores based on the 8 internal effects of the chip and 24 external effects on 3 eeprom chips.
 * Each effect has upto 3 variations and a wet/dry mix.
 * All parameters are stored for each effect.
-* 512 patches can be stored on the SD card.
+* 128 patches can be stored on the SD card.
 * MIDI input to recall patches and also edit effects in realtime with CC numbers.
 * MIDI thru.
 * Mono/Stereo inputs and outputs.
 
 # Todo
 
-* Bank changes over MIDI
 * Foot switch bypass input
 * Sysex dumps and loading of patches
