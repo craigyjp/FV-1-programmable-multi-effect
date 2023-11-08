@@ -17,6 +17,7 @@ The programmer is based around a Teensy 2++, I understand these are hard to find
 * MIDI out for parameter sending and future sysex dumps
 * MIDI thru.
 * Mono/Stereo inputs and outputs.
+* Input monitoring VU's
 
 # Todo
 
