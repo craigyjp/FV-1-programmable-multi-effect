@@ -11,7 +11,8 @@ The programmer is based around a Teensy 2++, I understand these are hard to find
 * All parameters are stored for each effect.
 * Parameters can be sent over MIDI or disabled.
 * 128 patches can be stored on the SD card.
-* MIDI input to recall patches and also edit effects in realtime with CC numbers.
+* MIDI in to recall patches and also edit effects in realtime with CC numbers.
+* MIDI out for parameter sending and future sysex dumps
 * MIDI thru.
 * Mono/Stereo inputs and outputs.
 
