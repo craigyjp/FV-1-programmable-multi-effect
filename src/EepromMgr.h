@@ -3,6 +3,7 @@
 #define EEPROM_MIDI_CH 0
 #define EEPROM_ENCODER_DIR 1
 #define EEPROM_LED_INTENSITY 2
+#define EEPROM_SEND_PARAMS 3
 
 int getMIDIChannel() {
   byte midiChannel = EEPROM.read(EEPROM_MIDI_CH);
@@ -24,6 +25,17 @@ boolean getEncoderDir() {
 void storeEncoderDir(byte encoderDir)
 {
   EEPROM.update(EEPROM_ENCODER_DIR, encoderDir);
+}
+
+boolean getSendParams() {
+  byte sp = EEPROM.read(EEPROM_SEND_PARAMS); 
+  if (sp < 0 || sp > 1)return true; //If EEPROM has no encoder direction stored
+  return sp == 1 ? true : false;
+}
+
+void storeSendParams(byte updateParams)
+{
+  EEPROM.update(EEPROM_SEND_PARAMS, updateParams);
 }
 
 int getLEDintensity() {

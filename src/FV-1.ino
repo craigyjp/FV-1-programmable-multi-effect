@@ -59,7 +59,7 @@ void setup() {
   LEDintensity = LEDintensity * 10;
   oldLEDintensity = LEDintensity;
 
-  patchDisplay.begin();            // initializes the display
+  patchDisplay.begin();                     // initializes the display
   patchDisplay.setBacklight(LEDintensity);  // set the brightness to 100 %
   padPatchNumber();
   patchDisplay.print(patchNumber);  // display INIT on the display
@@ -86,6 +86,11 @@ void setup() {
   midiChannel = getMIDIChannel();
   if (midiChannel < 0 || midiChannel > 16) {
     storeMidiChannel(0);
+  }
+
+  updateParams = getSendParams();
+    if (updateParams < 0 || updateParams > 1) {
+    storeSendParams(0);
   }
 
   //MIDI 5 Pin DIN
@@ -135,7 +140,7 @@ void outputDAC(int CHIP_SELECT, uint32_t sample_data) {
 }
 
 void myConvertControlChange(byte channel, byte number, byte value) {
-  int newvalue = value << 3;
+  int newvalue = value * 8;
   myControlChange(channel, number, newvalue);
 }
 
@@ -156,7 +161,7 @@ void recallPatch(int patchNo) {
     setCurrentPatchData(data);
     patchFile.close();
     padPatchNumber();
-    patchDisplay.print(patchNumber); 
+    patchDisplay.print(patchNumber);
   }
 }
 
@@ -193,6 +198,9 @@ void updatePatchname() {
 }
 
 void updateeffect(boolean announce) {
+  if (updateParams) {
+    midiCCOut(CCeffect, effect);
+  }
   switch (effect) {
     case 0:
       sr.set(PROGRAM_0, LOW);
@@ -253,24 +261,36 @@ void updateeffect(boolean announce) {
 }
 
 void updatepot1(boolean announce) {
+  if (updateParams) {
+    midiCCOut(CCpot1, pot1 / 8);
+  }
   uint32_t outputValue_a = map(pot1, 0, 1023, 0, 43785);
   sample_data = ((channel_a & 0xFFF0000F) | (outputValue_a & 0xFFFF) << 4);
   outputDAC(DAC_CS1, sample_data);
 }
 
 void updatepot2(boolean announce) {
+  if (updateParams) {
+    midiCCOut(CCpot2, pot2 / 8);
+  }
   uint32_t outputValue_b = map(pot2, 0, 1023, 0, 43785);
   sample_data = ((channel_b & 0xFFF0000F) | (outputValue_b & 0xFFFF) << 4);
   outputDAC(DAC_CS1, sample_data);
 }
 
 void updatepot3(boolean announce) {
+  if (updateParams) {
+    midiCCOut(CCpot3, pot3 / 8);
+  }
   uint32_t outputValue_c = map(pot3, 0, 1023, 0, 43785);
   sample_data = ((channel_c & 0xFFF0000F) | (outputValue_c & 0xFFFF) << 4);
   outputDAC(DAC_CS1, sample_data);
 }
 
 void updatemix(boolean announce) {
+  if (updateParams) {
+    midiCCOut(CCmix, mix / 8);
+  }
   uint32_t outputValue_e = map(mix, 0, 1023, 0, 52428);
   sample_data = ((channel_e & 0xFFF0000F) | (outputValue_e & 0xFFFF) << 4);
   outputDAC(DAC_CS1, sample_data);
@@ -282,6 +302,12 @@ void updatemix(boolean announce) {
 
 void updatebank(boolean announce) {
   if (bank0) {
+    if (updateParams) {
+      midiCCOut(CCbank0, 127);
+      midiCCOut(CCbank1, 0);
+      midiCCOut(CCbank2, 0);
+      midiCCOut(CCbank3, 0);
+    }
     sr.set(BANK0_LED, HIGH);
     sr.set(BANK1_LED, LOW);
     sr.set(BANK2_LED, LOW);
@@ -292,6 +318,12 @@ void updatebank(boolean announce) {
     sr.set(EEPROM_3, HIGH);
   }
   if (bank1) {
+    if (updateParams) {
+      midiCCOut(CCbank1, 0);
+      midiCCOut(CCbank1, 127);
+      midiCCOut(CCbank2, 0);
+      midiCCOut(CCbank3, 0);
+    }
     sr.set(BANK0_LED, LOW);
     sr.set(BANK1_LED, HIGH);
     sr.set(BANK2_LED, LOW);
@@ -300,8 +332,19 @@ void updatebank(boolean announce) {
     sr.set(EEPROM_1, LOW);
     sr.set(EEPROM_2, HIGH);
     sr.set(EEPROM_3, HIGH);
+    delay(5);
+    sr.set(INTERNAL, LOW);
+    delay(5);
+    sr.set(INTERNAL, HIGH);
+    delay(5);
   }
   if (bank2) {
+    if (updateParams) {
+      midiCCOut(CCbank1, 0);
+      midiCCOut(CCbank1, 0);
+      midiCCOut(CCbank2, 127);
+      midiCCOut(CCbank3, 0);
+    }
     sr.set(BANK0_LED, LOW);
     sr.set(BANK1_LED, LOW);
     sr.set(BANK2_LED, HIGH);
@@ -310,8 +353,19 @@ void updatebank(boolean announce) {
     sr.set(EEPROM_1, HIGH);
     sr.set(EEPROM_2, LOW);
     sr.set(EEPROM_3, HIGH);
+    delay(5);
+    sr.set(INTERNAL, LOW);
+    delay(5);
+    sr.set(INTERNAL, HIGH);
+    delay(5);
   }
   if (bank3) {
+    if (updateParams) {
+      midiCCOut(CCbank1, 0);
+      midiCCOut(CCbank1, 0);
+      midiCCOut(CCbank2, 0);
+      midiCCOut(CCbank3, 127);
+    }
     sr.set(BANK0_LED, LOW);
     sr.set(BANK1_LED, LOW);
     sr.set(BANK2_LED, LOW);
@@ -320,6 +374,17 @@ void updatebank(boolean announce) {
     sr.set(EEPROM_1, HIGH);
     sr.set(EEPROM_2, HIGH);
     sr.set(EEPROM_3, LOW);
+    delay(5);
+    sr.set(INTERNAL, LOW);
+    delay(5);
+    sr.set(INTERNAL, HIGH);
+    delay(5);
+  }
+}
+
+void midiCCOut(byte cc, byte value) {
+  if (midiChannel > 0) {
+    MIDI.sendControlChange(cc, value, midiChannel);  //MIDI DIN is set to Out
   }
 }
 
@@ -329,48 +394,48 @@ void myControlChange(byte channel, byte control, int value) {
 
     case CCeffect:
       effect = map(value, 0, 1023, 0, 7);
-      updateeffect(1);
+      updateeffect(0);
       break;
 
     case CCpot1:
       pot1str = map(value, 0, 1023, 0, 127);  // for display
       pot1 = value;
-      updatepot1(1);
+      updatepot1(0);
       break;
 
     case CCpot2:
       pot2str = map(value, 0, 1023, 0, 127);  // for display
       pot2 = value;
-      updatepot2(1);
+      updatepot2(0);
       break;
 
     case CCpot3:
       pot3str = map(value, 0, 1023, 0, 127);  // for display
       pot3 = value;
-      updatepot3(1);
+      updatepot3(0);
       break;
 
     case CCmix:
       mixstra = map(value, 0, 1023, 0, 127);  // for display
       mixstrb = map(value, 0, 1023, 127, 0);  // for display
       mix = value;
-      updatemix(1);
+      updatemix(0);
       break;
 
     case CCbank0:
-      updatebank(1);
+      updatebank(0);
       break;
 
     case CCbank1:
-      updatebank(1);
+      updatebank(0);
       break;
 
     case CCbank2:
-      updatebank(1);
+      updatebank(0);
       break;
 
     case CCbank3:
-      updatebank(1);
+      updatebank(0);
       break;
   }
 }

@@ -32,9 +32,9 @@ boolean encCW = true;//This is to set the encoder to increment when turned CW - 
 
 //Values below are just for initialising and will be changed when synth is initialised to current panel controls & EEPROM settings
 byte midiChannel = MIDI_CHANNEL_OMNI;//(EEPROM)
-boolean announce = false;
+boolean announce = true;
+boolean updateParams = false;
 
-String StratusLFOWaveform = "                ";
 int currentbank = 0;
 int pot1 = 0;
 int pot1str = 0;
