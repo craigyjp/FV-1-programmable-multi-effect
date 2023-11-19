@@ -18,8 +18,8 @@ The programmer is based around a Teensy 2++, I understand these are hard to find
 * MIDI thru.
 * Mono/Stereo inputs and outputs.
 * Input monitoring VU's
+* Footswitch changes pot3 and can affect the speed of rotary sounds from fast to slow with a slope.
 
 # Todo
 
-* Foot switch bypass input
 * Sysex dumps and loading of patches
