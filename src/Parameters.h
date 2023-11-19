@@ -17,6 +17,7 @@ const char* VERSION = "1.0";
 #define   CCbank3 15
 #define   CCeffect 16
 #define   CCmix 17
+#define   CCfootSwitch 18
 
 // Parameters
 
@@ -53,6 +54,12 @@ boolean bank0 = 0;
 boolean bank1 = 0;
 boolean bank2 = 0;
 boolean bank3 = 0;
+boolean footPedal = false;
+boolean fast = false;
+boolean slow = false;
+int slowpot3 = 0;
+int fastpot3 = 1023;
+
 int i = 0;
 
 int returnvalue = 0;
@@ -196,7 +203,7 @@ const char* const name25[] PROGMEM = {
 
 //ROM3 1st line
 const char str31[8][12] PROGMEM = {//str1 is effect name of 1st line
-"Phaser","Flanger","Triple","6 Tap","Cabinet","Parallax","Choir","Spacedash"
+"Phaser","Flanger","VP330","Cathedral","Rotor","Ensemble","Leslie","Wah Wah"
 };
 const char* const name31[] PROGMEM = {
  str31[0], str31[1], str31[2], str31[3], str31[4], str31[5], str31[6], str31[7],
@@ -204,7 +211,7 @@ const char* const name31[] PROGMEM = {
 
 //ROM3 2nd line
 const char str32[8][12] PROGMEM = {//str1 is effect name of 1st line
-"Bass","Bass","Delay","Delay","Simulator","Phaser","Saw",""
+"Bass","Bass","Ensemble","","Effect","Effect","Effect",""
 };
 const char* const name32[] PROGMEM = {
  str32[0], str32[1], str32[2], str32[3], str32[4], str32[5], str32[6], str32[7],
@@ -212,7 +219,7 @@ const char* const name32[] PROGMEM = {
 
 //ROM3 param1
 const char str33[8][12] PROGMEM = {//str1 is effect name of 1st line
-"rate","rate","delay 1","delay time","low pass","rate","delay","intensity"
+"rate","rate","rev level","rev level","rev level","rev level","rev level","rev level"
 };
 const char* const name33[] PROGMEM = {
  str33[0], str33[1], str33[2], str33[3], str33[4], str33[5], str33[6], str33[7],
@@ -220,15 +227,15 @@ const char* const name33[] PROGMEM = {
 
 //ROM3 param2
 const char str34[8][12] PROGMEM = {//str1 is effect name of 1st line
-"depth","depth","delay 2","flanger lfo","high pass","depth","mix","rate"
+"depth","depth","cho/ens mix","feedback","depth","ens mix","filter freq","filter Q"
 };
 const char* const name34[] PROGMEM = {
  str34[0], str34[1], str34[2], str34[3], str34[4], str34[5], str34[6], str34[7],
 };
 
-//ROM2 param3
+//ROM3 param3
 const char str35[8][12] PROGMEM = {//str1 is effect name of 1st line
-"feedback","feedback","delay 3","feedback","volume","feedback","volume","mix"
+"feedback","feedback","ensemble","speed","speed","treble","speed","sensitivity"
 };
 const char* const name35[] PROGMEM = {
  str35[0], str35[1], str35[2], str35[3], str35[4], str35[5], str35[6], str35[7],

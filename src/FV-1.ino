@@ -300,6 +300,44 @@ void updatemix(boolean announce) {
   outputDAC(DAC_CS1, sample_data);
 }
 
+void updatefootSwitch() {
+
+  if (pot3 < 511 ) {
+    slowpot3 = pot3;
+    fast = true;
+    slow = false;
+  }
+  if (pot3 >= 511 ) {
+    fastpot3 = pot3;
+    slow = true;
+    fast = false;
+  }
+}
+
+void changeSpeed() {
+
+  if (footPedal && slow) {
+    pot3 = (pot3 - 20);
+    if (pot3 < slowpot3) {
+      pot3 = slowpot3;
+      footPedal = false;
+      slow = false;
+    }
+    updatepot3(0);
+  }
+
+  if (footPedal && fast) {
+    pot3 = (pot3 + 20);
+    if (pot3 > fastpot3) {
+      pot3 = fastpot3;
+      footPedal = false;
+      fast = false;
+    }
+    updatepot3(0);
+  }
+  
+}
+
 void updatebank(boolean announce) {
   if (bank0) {
     if (updateParams) {
@@ -437,6 +475,10 @@ void myControlChange(byte channel, byte control, int value) {
     case CCbank3:
       updatebank(0);
       break;
+
+    case CCfootSwitch:
+      updatefootSwitch();
+      break;
   }
 }
 
@@ -540,6 +582,12 @@ void checkSwitches() {
       bank3 = 1;
       myControlChange(midiChannel, CCbank3, bank3);
     }
+  }
+
+  FOOTSWITCH_Switch.update();
+  if (FOOTSWITCH_Switch.numClicks() == 1) {
+    footPedal = true;
+    myControlChange(midiChannel, CCfootSwitch, footPedal);
   }
 
   saveButton.update();
@@ -836,4 +884,5 @@ void loop() {
   checkMux();
   writeDemux();
   checkEEPROM();
+  changeSpeed();
 }
