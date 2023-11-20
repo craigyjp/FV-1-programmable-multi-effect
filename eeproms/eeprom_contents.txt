@@ -1,0 +1,134 @@
+ME2009
+
+Program 0
+Cathedral
+
+Pot 1 Reverb mix
+Set amount of hall reverb effect in mix
+Pot 2 Feedback
+Set amount of feedback in chorus effect
+Pot 3 Speed
+Set LFO speed
+A chorus effect similar to the ‘Boehm Phasing Rotor’
+
+Program 1
+Rotor
+
+Pot 1Reverb mix
+Set amount of reverb effect in
+Pot 2 Depth
+Set intensity of the rotor effect
+Pot 3 Speed
+Set rotor speed
+A Leslie effect similar to the ‘Boehm
+
+Program 2
+Ensemble
+Pot 1 Reverb mix
+Set amount of reverb effect in mix
+Pot 2 Ensemble mix
+Set amount of ensemble effect in mix
+Pot 3 Treble boost
+Set amplification of higher frequencies
+This effect is also known as ‘triple chorus’ or ‘Solina Strings’
+
+Program 3
+Fading
+Pot 1 Dry effect mix
+Pot 2 Depth
+Set intensity of fading effect
+Pot 3 Resonance
+Set degree of resonance in feedback circuit
+A flanger/chorus effect similar to the ‘Boehm Phasing Rotor’
+
+Program 4
+PolySixChor
+Pot 1 Reverb mix
+Set amount of reverb effect in mix
+Pot 2 Ensemble mix
+Set amount of ensemble effect in mix
+Pot 3 Treble boost
+Set amplification of higher frequencies
+Another ensemble effect, somewhat similar in sound to that of the Korg PolySix
+
+Program 5
+Tremolo
+Pot 1 Reverb mix
+Set amount of reverb effect in mix
+Pot 2 Warp factor
+Pot 3 Speed
+Set tremolo rate
+Another simulation of the Leslie effect found on analogue electronic organs
+
+Program 6
+Leslie
+Pot 1 Reverb mix
+Set amount of reverb effect in mix
+Pot 2 Filter frequency
+Set treble/bass crossover frequency
+Pot 3 Speed
+Set rotor speed
+Another rotating loudspeaker effect
+
+Program 7
+EQ/stereo width
+Pot 1 Bass
+Set bass level
+Pot 2 Treble
+Set treble level
+Pot 3 Width
+Set stereo width; values over 64 give a ‘vocal remover’ effect
+Bass and treble controls; can also be used as a vocal remover
+
+
+
+MIDI FV-1
+
+Program 0 
+Chor & Reverb 1 
+Pot 1 Reverb 
+Pot 2 Chorus Speed 
+Pot 3 HighPass Level
+
+Program 1
+Chor & Reverb 2 
+Pot 1 Reverb 
+Pot 2 Chorus 
+Pot 3 HighPass
+
+Program 2 
+VP330 
+Pot 1 Reverb Mix
+Pot 2 Chrorus/Ensemble
+Pot 3 Ensemble
+
+Program 3 
+Leslie 
+Pot 1 Reverb 
+Pot 2 Speed 
+Pot 3 Cutoff
+
+Program 4 
+Phaser 
+Pot 1 Reverb 
+Pot 2 Rate 
+Pot 3 Depth
+
+Program 5 
+Ensemble 
+Pot 1 Reverb 
+Pot 2 Filter 
+Pot 3 Mix
+
+Program 6 
+Wahwha 
+Pot 1 Reverb 
+Pot 2 Filter Q 
+Pot 3 Sensivity
+
+Program 7 
+Phasing Rotor 
+Pot 1 Reverb 
+Pot 2 Speed 
+Pot 3 Depth
+
