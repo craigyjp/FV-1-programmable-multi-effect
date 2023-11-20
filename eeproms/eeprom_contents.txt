@@ -132,3 +132,123 @@ Pot 1 Reverb
 Pot 2 Speed 
 Pot 3 Depth
 
+EEPROM 1
+
+Program 0
+Qubit Delay
+Pot 1 time
+Pot 2 modulation
+Pot 3 feedback
+
+Program 1
+SuperNova Delay
+Pot 1 time
+Pot 2 filter
+Pot 3 feedback
+
+Program 2
+Modulated Delay
+Pot 1 time
+Pot 2 feedback
+Pot 3 modulation
+
+Program 3
+Echo Reverb
+Pot 1 rev level
+Pot 2 delay time
+Pot 3 echo level
+
+Program 4
+Shimmer Reverb
+Pot 1 dwell
+Pot 2 pitch
+Pot 3 blend
+
+Program 5
+Sample & Hold
+Pot 1 time
+Pot 2 feedback
+Pot 3 modulation
+
+Program 6
+Modulated Reverb
+Pot 1 dell
+Pot 2 depth
+Pot 3 rate
+
+Program 7
+Glitch Bit Delay
+Pot 1 delay 1
+Pot 2 delay 2
+Pot 3 feedback
+
+
+EEPROM 2
+
+Program 0
+Daydream Delay
+Pot 1 time
+Pot 2 feedback
+Pot 3 filter
+
+Program 1
+Starfield Delay
+Pot 1 time
+Pot 2 feedback
+Pot 3 phaser
+
+Program 2
+Dual Pitch Shift
+Pot 1 pitch 1
+Pot 2 1-mix-2
+Pot 3 pitch 2
+
+Program 3
+Triple Delay
+Pot 1 delay 1
+Pot 2 delay 2
+Pot 3 delay 3
+
+Program 4
+Reverse delay
+Pot 1 sample
+Pot 2 feedback
+Pot 3 delay
+
+Program 5
+Wah Reverb
+Pot 1 reverb
+Pot 2 rate
+Pot 3 wah
+
+Program 6
+Vibrato Reverb
+Pot 1 reverb
+Pot 2 rate
+Pot 3 vibrato
+
+Program 7
+Phaser Reverb
+Pot 1 reverb
+Pot 2 rate
+Pot 3 phaser
+
+//ROM3 1st line
+const char str31[8][12] PROGMEM = {//str1 is effect name of 1st line
+"Phaser","Flanger","VP330","Cathedral","Rotor","Ensemble","Leslie","Wah Wah"
+
+//ROM3 2nd line
+const char str32[8][12] PROGMEM = {//str1 is effect name of 1st line
+"Bass","Bass","Ensemble","","Effect","Effect","Effect",""
+
+//ROM3 param1
+const char str33[8][12] PROGMEM = {//str1 is effect name of 1st line
+"rate","rate","rev level","rev level","rev level","rev level","rev level","rev level"
+
+//ROM3 param2
+const char str34[8][12] PROGMEM = {//str1 is effect name of 1st line
+"depth","depth","cho/ens mix","feedback","depth","ens mix","filter freq","filter Q"
+
+//ROM3 param3
+const char str35[8][12] PROGMEM = {//str1 is effect name of 1st line
+"feedback","feedback","ensemble","speed","speed","treble","speed","sensitivity"
