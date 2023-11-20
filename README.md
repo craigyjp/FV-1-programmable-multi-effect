@@ -20,6 +20,10 @@ The programmer is based around a Teensy 2++, I understand these are hard to find
 * Input monitoring VU's
 * Footswitch changes pot3 and can affect the speed of rotary sounds from fast to slow with a slope.
 
+# Eeproms
+
+I have included 3 eeproms that I have used in my build, and others that I found. What is quite annoying is that you cannot read an eeprom back into the SpinCad Designer, although it has an import function I never managed to get it to do anything except blank the patch I loaded the eeprom into. So I found this utility on github that allows you to read in an eeprom and spit it out in the Arduino IDE serial console as 8 progmem dumps. These can then be used to create an effects file of 8 progmem sections that can be written to a blank eeprom. This way it's possible to test and listen to eeproms from others, cut out the effect you want and build you own banks of 8.
+
 # Todo
 
 * Sysex dumps and loading of patches
